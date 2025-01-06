@@ -20,9 +20,14 @@ class Customer(User):
 
     def add_to_cart(self, restaurant, items_name, quantity):
         cart_items = restaurant.menu.find_item(items_name)
+        # print(cart_items.quantity)
         if cart_items:
-            cart_items.quantity = quantity
-            self.cart.add_item(cart_items)
+            if quantity > cart_items.quantity:
+                print("Not Enough Item Available")
+            else:
+                cart_items.quantity = quantity
+                self.cart.add_item(cart_items)
+                print("Item Added")
         else:
             print("Item Not Found")
 
@@ -106,8 +111,8 @@ class Menu:
     def find_item(self, items_name):
         for menu_item in self.items:
             if menu_item.name.lower() == items_name.lower():
-                return item
-            return None
+                return menu_item
+        return None
 
     def remove_item(self, items_name):
         found_item = self.find_item(items_name)
@@ -128,7 +133,7 @@ class FoodItem:
     def __init__(self, name, price, quantity):
         self.name = name
         self.price = price
-        self.quantity = quantity
+        self.quantity = int(quantity)
 
 
 mama_res = Restaurant("Mama Restaurant")
@@ -144,5 +149,6 @@ customer1 = Customer("rahim", "123456", "rahim@gmail.com", "Dhaka")
 customer1.view_menu(mama_res)
 item_name = input("Enter Item Name: ")
 item_quantity = int(input("Enter Item Quantity: "))
+# customer1.add_to_cart(mama_res, item_name, int(item_quantity))
 customer1.add_to_cart(mama_res, item_name, item_quantity)
 customer1.view_cart()
